@@ -1,9 +1,30 @@
 <header>
-  <h1>Todo List</h1>
+  <h1>Todo List ( {{$ctrl.incompleteCount}} )</h1>
+  <h2 ng-show="$ctrl.currentUser">Welcome {{$ctrl.currentUser.username}}</h2>
+
+  <label class="hide-completed">
+   <input type="checkbox" ng-model="$ctrl.hideCompleted"/>
+   Hide Completed Tasks
+ </label>
+
+ <login-buttons></login-buttons>
+
+  <form class="new-task" ng-submit="$ctrl.addTask($ctrl.newTask)" ng-show="$ctrl.currentUser">
+    <input ng-model="$ctrl.newTask" type="text" name="text" placeholder="Type to add new tasks"/>
+  </form>
+
 </header>
 
 <ul>
-  <li ng-repeat="task in $ctrl.tasks">
-    {{task.text}}
+  <li ng-repeat="task in $ctrl.tasks" ng-init="time=task.createdAt; min=task.createdAt.getMinutes()+1" ng-class="{'checked': task.checked}">
+    <button class="delete" ng-click="$ctrl.removeTask(task)">&times;</button>
+
+    <input type="checkbox" ng-checked="task.checked" ng-click="$ctrl.setChecked(task)" class="toggle-checked"/>
+
+    <span class="text">
+      {{task.text}} - <strong>{{task.username}}</strong> added at
+      {{(time.getHours() + 1)%13}}:{{min>=10?min:'0'+min}} {{time.getHours()>=12 ? "PM" : "AM"}}
+      on {{time.getMonth() + 1}}/{{time.getDate()}}/{{time.getFullYear()}}
+    </span>
   </li>
 </ul>
